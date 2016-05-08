@@ -17,9 +17,14 @@
     <script src="src/js/route/route.js"></script>
 
     <!-- some navigation -->
-    <ul class="nav nav-pills">
-    <li role="presentation"><a ui-sref="home">Home</a></li>
-    <li role="presentation"><a ui-sref="changepage">Change Page</a></li>
+  <ul class="nav nav-pills">
+    <ul class="nav navbar-nav navbar-left">
+      <li role="presentation"><a ui-sref="home">Home</a></li>
+      <li role="presentation"><a ui-sref="enroll">Enroll</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li role="presentation"><a ui-sref="login">Login</a></li>
+    </ul>
   </ul>
 
     <div ui-view></div>
