@@ -1,9 +1,18 @@
-<div class="container text-center">
-  <h2>
-    Guro is Lovely
-    <span class="glyphicon glyphicon-heart"></span>
-  </h2>
-  <h2>
-    Be like Guro
-  </h2>
+<div ng-controller="loginController as login">
+<div class="container text-center" align="center" style="max-width: 800px;">
+  <form>
+    <div class="form-group">
+        <label for="inputUsername">StudentID</label>
+        <input type="username" ng-model="Id" class="form-control" id="inputId" placeholder="Username : b5610546281">
+    </div>
+    <div class="form-group">
+        <label for="inputPassword">Password</label>
+        <input type="password" class="form-control" id="inputPassword" placeholder="Password" disabled>
+    </div>
+    <div class="checkbox">
+        <label><input type="checkbox"> Remember me</label>
+    </div>
+    <button type="submit" class="btn btn-primary" ng-click="login.login(Id)">Login</button>
+</form>
+</div>
 </div>

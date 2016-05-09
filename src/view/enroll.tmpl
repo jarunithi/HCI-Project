@@ -2,20 +2,20 @@
 <div class="container">
   <div ng-controller="TodoListController as todoList">
         <div>
-        <h2 class="form-group pull-left" >Course</h2>
+        <h2 class="form-group pull-left" style="margin:20px" >Course</h2>
         <div class="form-group pull-right">
-        <!-- <span class="counter pull-right"></span> -->
-        <div align="right" style="width: 300px; margin-top: 30px;">
+        <div align="right" style="width: 300px; margin-top:20px;">
         <span class="counter pull-left"></span>
-        <input type="text pull-rig ht" style="display: block; width: 200px;" class="search form-control" placeholder="What you looking for?">
+        <input type="text pull-right" style="display: block; width: 200px;" class="search form-control" placeholder="Search for course">
         </div>
     </div>
     </div>
-    <table class="table table-striped table-hover results">
+    <table class="table table-striped table-hover results" >
     <thead>
         <tr>
             <th>Subject ID</th>
             <th>Subject Name</th>
+            <th>Credit</th>
             <th></th>
         </tr>
          <tr class="warning no-result">
@@ -24,8 +24,9 @@
     </thead>
         <tr ng-repeat="subject in todoList.subjects">
             <td>{{subject.id}}</td>
-            <td title="{{subject.description.en}}&#013;{{subject.description.th}}">{{subject.name.en}}<br>{{subject.name.th}}
+            <td> <div data-tooltip="true" data-toggle="tooltip" data-placement="bottom" title="{{subject.description.en}}&#013;{{subject.description.th}}" tooltip>{{subject.name.en}}<br>{{subject.name.th}}</div>
             </td>
+            <td>{{subject.credit.total}}</td>
             <td><button type="button" class="btn btn-primary" style="width:90px" ng-hide="todoList.enrolled.hasOwnProperty(subject.id)"  data-toggle="modal" data-target="#{{subject.id}}"> Enroll </button>
                 <button type="button" class="btn btn-default" style="width:90px" disabled ng-hide="!todoList.enrolled.hasOwnProperty(subject.id)" data-toggle="modal" data-target="#{{subject.id}}">Enrolled</button>
                 <!-- Modal content-->
@@ -49,10 +50,14 @@
                                       <span class="caret"></span></button>
 
                                       <ul class="dropdown-menu">
-                                        <li ng-repeat="section in subject.sections" ng-click="todoList.select(subject,section)" ng-disabled="{{section.accept-section.enrolled}}<1"><a>{{section.id}}</a></li>
+                                        <li ng-repeat="section in subject.sections" ng-click="todoList.select(subject,section)" ng-disabled="section.accept-section.enrolled<1"><a>{{section.id}}</a></li>
                                         <li ng-show="!subject.sections.length"><a>---</a></li>
                                     </ul>
                                     <b style="margin:3%">{{todoList.selected[subject.id].id}} Available : {{todoList.selected[subject.id].accept-todoList.selected[subject.id].enrolled}}</b>
+                                </div>
+                                <div style="margin-left: 5%">
+                                <b >Lectuerer : </b>
+                                    <b ng-repeat="instructor in todoList.selected[subject.id].instructors">{{instructor}}&#013;</b>
                                 </div>
                                 
 

@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="src/css/todo.css">
   </head>
   <body>
+  <div ng-controller="loginController as login">
     <!-- Import scripts -->
     <script type="text/javascript" src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
@@ -17,16 +18,23 @@
     <script src="src/js/route/route.js"></script>
 
     <!-- some navigation -->
-  <ul class="nav nav-pills">
-    <ul class="nav navbar-nav navbar-left">
-      <li role="presentation"><a ui-sref="home">Home</a></li>
-      <li role="presentation"><a ui-sref="enroll">Enroll</a></li>
+    <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header"><!-- 
+      <a class="navbar-brand">Registration System</a> -->
+    </div>
+    <ul class="nav navbar-nav">
+      <li role="presentation" class="active" ><a class="navbar-brand">My Course</a></li>
+      <li role="presentation" ng-if="login.check()"><a ui-sref="myCourse">My Course</a></li>
+      <li role="presentation" ng-if="login.check()"><a ui-sref="enroll">Enroll</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
-      <li role="presentation"><a ui-sref="login">Login</a></li>
+      <li role="presentation" ng-if="login.check()" ng-click="login.logout()" data-tooltip="true" data-placement="bottom" title="click to logout"> <a ui-sref="login"><span class="glyphicon glyphicon-log-in"></span >{{login.getId()}}</a></li>
     </ul>
-  </ul>
+  </div>
+</nav>
 
     <div ui-view></div>
+    </div>
   </body>
 </html>

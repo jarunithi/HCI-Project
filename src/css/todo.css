@@ -17,3 +17,7 @@
   padding:8px; 
   color:#ccc;
 }
+
+div.tooltip-inner {
+    max-width: 600px;
+}
