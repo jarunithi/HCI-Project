@@ -254,7 +254,8 @@ angular.module('todoApp', ['ui.router'])
       return subjects;
     }
     this.setId = function(user) {
-      if(user == "b5610546281"){
+      //if(user == "b5610546281"){
+      if(true){
         username = user;
         $location.path("/myCourse");
       }
