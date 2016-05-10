@@ -133,7 +133,7 @@ angular.module('todoApp', ['ui.router'])
           }
 
           for (i = 0; i < home.subjects.length; i++) {
-            $http.get('https://whsatku.github.io/skecourses/' + home.subjects[i].id + '.json')
+            $http.get('https://whsatku.github.io/skecourses/sections/' + home.subjects[i].id + '.json')
               .success((function(i) {
                 return function(response) {
                   home.subjects[i]['sections'] = response;
