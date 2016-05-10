@@ -1,8 +1,7 @@
-angular.module('todoApp', ['ui.router'])
-  .controller('TodoListController', function($scope, $http, $rootScope, userService, $location) {
+angular.module('todoApp', ['ui.router' ,'ngCookies'])
+  .controller('TodoListController', function($scope, $http, $rootScope, userService, $location ) {
     var todoList = this
     if (userService.getId() == "") {
-      console.log("Redirect");
       $location.path("/login");
     }
     todoList.selected = userService.getSelect();
@@ -47,12 +46,10 @@ angular.module('todoApp', ['ui.router'])
         })
         .error(function(data, status, headers, config) {
           //  Do some error handling here
-          console.log("Error");
         });
     }
     todoList.select = function(subject, section) {
       todoList.selected[subject.id] = section;
-      console.log(todoList.selected[subject.id])
       userService.syncSelect(todoList.selected);
     }
     todoList.getId = function() {
@@ -62,7 +59,6 @@ angular.module('todoApp', ['ui.router'])
     todoList.enroll = function(obj) {
       userService.add(obj);
       todoList.enrolled = userService.get();
-      console.log(todoList.enrolled);
     }
 
     $(document).ready(function() {
@@ -104,7 +100,6 @@ angular.module('todoApp', ['ui.router'])
   .controller('homeController', function($scope, $http, $rootScope, userService, $location) {
     var home = this
     if (userService.getId() == "") {
-      console.log("Redirect");
       $location.path("/login");
     }
     home.subjects = userService.getSub();
@@ -149,7 +144,6 @@ angular.module('todoApp', ['ui.router'])
         })
         .error(function(data, status, headers, config) {
           //  Do some error handling here
-          console.log("Error");
         });
     }
     home.drop = function(id) {
@@ -218,31 +212,44 @@ angular.module('todoApp', ['ui.router'])
     }
 
   })
-  .service('userService', function($location) {
+  .service('userService', function($location, $cookieStore, $cookies) {
     var username = "";
     var subjects = [];
     var enroll = {};
     var selected = {};
-    if (username == "") {
-      console.log("Redirect");
+    username = $cookies.get('user');
+    
+    if (username == undefined || username == "") {
       $location.path("/login");
+    }
+    if($cookieStore.get(username+'s')!=$cookieStore.get(username+'e')){
+        enroll = $cookieStore.get(username+'e');
+        selected = $cookieStore.get(username+'s');
     }
 
     this.add = function(subject) {
       enroll[subject.id] = selected[subject.id].id;
+      $cookieStore.put(username+'e',enroll);
+      $cookieStore.put(username+'s',selected);
     }
     this.drop = function(id) {
       delete enroll[id];
       selected[id] = {
         ['id']: "---"
       };
-
+      $cookieStore.put(username+'e',enroll);
+      $cookieStore.put(username+'s',selected);
     }
     this.get = function() {
+
       return enroll;
+    }
+    this.set = function(obj) {
+      enroll=obj;
     }
     this.syncSelect = function(select) {
       selected = select;
+      $cookieStore.put(username+'s',selected);
     }
     this.getSelect = function() {
       return selected;
@@ -254,14 +261,20 @@ angular.module('todoApp', ['ui.router'])
       return subjects;
     }
     this.setId = function(user) {
-      if(user == "b5610546281"){
+      if(user.length == 11 && user[0]=='b' ){
         username = user;
+        $cookies.put('user',username);
+        if($cookieStore.get(username+'s')!=$cookieStore.get(username+'e')){
+        enroll = $cookieStore.get(username+'e');
+        selected = $cookieStore.get(username+'s');
+        }
         $location.path("/myCourse");
       }
       else $location.path("/login");
     }
     this.logout = function() {
       username = "";
+      $cookies.put('user','');
     }
     this.getId = function() {
       return username;
