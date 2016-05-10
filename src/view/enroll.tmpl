@@ -54,7 +54,20 @@
                                         <li ng-show="!subject.sections.length"><a>---</a></li>
                                     </ul>
                                     <b style="margin:3%">{{todoList.selected[subject.id].id}} Available : {{todoList.selected[subject.id].accept-todoList.selected[subject.id].enrolled}}</b>
+                                
                                 </div>
+                                <div class="dropdown" style="margin:3%">
+                                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="true">Type 
+                                      <span class="caret"></span></button>
+                                      
+                                      <ul class="dropdown-menu">
+                                        <li ng-click="todoList.selectType(subject,'C')" ng-if="todoList.selected[subject.id].id>1"><a>Credit</a></li>
+                                        <li ng-click="todoList.selectType(subject,'A')" ng-if="todoList.selected[subject.id].id>1"><a>Audit</a></li>
+                                        <li ng-show="todoList.selected[subject.id]==undefined"><a>---</a></li>
+                                    </ul>
+                                    <b style="margin:3%" ng-if="subject.credit_type==undefined">---</b>
+                                    <b style="margin:3%">{{subject.credit_type}}</b>
+                                    </div>
                                 <div style="margin-left: 5%">
                                 <b >Lectuerer : </b>
                                     <b ng-repeat="instructor in todoList.selected[subject.id].instructors">{{instructor}}&#013;</b>

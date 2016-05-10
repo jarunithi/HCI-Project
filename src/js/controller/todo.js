@@ -1,18 +1,21 @@
 angular.module('todoApp', ['ui.router' ,'ngCookies'])
   .controller('TodoListController', function($scope, $http, $rootScope, userService, $location ) {
     var todoList = this
-    if (userService.getId() == "") {
+    if (userService.getId() == ""||userService.getId() == undefined) {
       $location.path("/login");
     }
     todoList.selected = userService.getSelect();
     todoList.enrolled = userService.get();
     todoList.subjects = userService.getSub();
-    if (todoList.subjects.length == 0) {
+    todoList.type = userService.getType();
+    if (todoList.subjects.length == 0 ) {
       $http.get('https://whsatku.github.io/skecourses/list.json')
         .success(function(data) {
           todoList.subjects = data;
 
           for (a = 0; a < todoList.subjects.length; a++) {
+
+            todoList.subjects[a]['index'] = a;
             todoList.selected[todoList.subjects.id] = {
               ['id']: "---"
             };
@@ -34,7 +37,10 @@ angular.module('todoApp', ['ui.router' ,'ngCookies'])
               .success((function(i) {
                 return function(response) {
                   todoList.subjects[i]['sections'] = response;
-                  todoList.subjects[i]['credit_type'] = 'credit';
+                  if(todoList.type[todoList.subjects[i].id]==undefined){
+                  todoList.subjects[i]['credit_type'] = 'Credit';
+                  }
+                else{todoList.subjects[i]['credit_type'] = 'Audit';}
                 }
               })(i))
               .error((function(i) {
@@ -50,6 +56,20 @@ angular.module('todoApp', ['ui.router' ,'ngCookies'])
     }
     todoList.select = function(subject, section) {
       todoList.selected[subject.id] = section;
+      userService.syncSelect(todoList.selected);
+    }
+    todoList.selectType = function(subject, type) {
+
+        console.log( todoList.subjects[subject.index]);
+      if(type == 'A'){
+        todoList.subjects[subject.index]['credit_type'] = 'Audit';
+        console.log(todoList.subjects[subject.index]);
+      }
+      if(type == 'C'){
+        todoList.subjects[subject.index]['credit_type'] = 'Credit';
+        console.log(todoList.subjects[subject.index]);
+      }
+      userService.setType(subject.id,type);
       userService.syncSelect(todoList.selected);
     }
     todoList.getId = function() {
@@ -99,12 +119,13 @@ angular.module('todoApp', ['ui.router' ,'ngCookies'])
   })
   .controller('homeController', function($scope, $http, $rootScope, userService, $location) {
     var home = this
-    if (userService.getId() == "") {
+    if (userService.getId() == "" ||userService.getId() == undefined) {
       $location.path("/login");
     }
     home.subjects = userService.getSub();
     home.selected = userService.getSelect();
     home.enrolled = userService.get();
+    home.type = userService.getType();
 
     if (home.subjects.length == 0) {
       $http.get('https://whsatku.github.io/skecourses/list.json')
@@ -112,6 +133,7 @@ angular.module('todoApp', ['ui.router' ,'ngCookies'])
           home.subjects = data;
 
           for (a = 0; a < home.subjects.length; a++) {
+            home.subjects[a]['index'] = a;
             home.selected[home.subjects.id] = {
               ['id']: "---"
             };
@@ -132,7 +154,10 @@ angular.module('todoApp', ['ui.router' ,'ngCookies'])
               .success((function(i) {
                 return function(response) {
                   home.subjects[i]['sections'] = response;
-                  home.subjects[i]['credit_type'] = 'credit';
+                  if(home.type[home.subjects[i].id]==undefined){
+                  home.subjects[i]['credit_type'] = 'Credit';
+                  }
+                else{home.subjects[i]['credit_type'] = 'Audit';}
                 }
               })(i))
               .error((function(i) {
@@ -196,13 +221,16 @@ angular.module('todoApp', ['ui.router' ,'ngCookies'])
     });
 
   })
-  .controller('loginController', function($scope, userService) {
+  .controller('loginController', function($scope, userService, $location) {
     var login = this
+    if (!(userService.getId() == "" || userService.getId() == undefined )) {
+      $location.path("/myCourse");
+    }
     login.login = function(user) {
       userService.setId(user);
     }
     login.check = function() {
-      return !(userService.getId() == "");
+      return !(userService.getId() == ""||userService.getId() == undefined);
     }
     login.getId = function() {
       return userService.getId();
@@ -217,6 +245,7 @@ angular.module('todoApp', ['ui.router' ,'ngCookies'])
     var subjects = [];
     var enroll = {};
     var selected = {};
+    var type = {};
     username = $cookies.get('user');
     
     if (username == undefined || username == "") {
@@ -225,6 +254,7 @@ angular.module('todoApp', ['ui.router' ,'ngCookies'])
     if($cookieStore.get(username+'s')!=$cookieStore.get(username+'e')){
         enroll = $cookieStore.get(username+'e');
         selected = $cookieStore.get(username+'s');
+        type = $cookieStore.get(username+'t');
     }
 
     this.add = function(subject) {
@@ -234,11 +264,7 @@ angular.module('todoApp', ['ui.router' ,'ngCookies'])
     }
     this.drop = function(id) {
       delete enroll[id];
-      selected[id] = {
-        ['id']: "---"
-      };
       $cookieStore.put(username+'e',enroll);
-      $cookieStore.put(username+'s',selected);
     }
     this.get = function() {
 
@@ -253,6 +279,14 @@ angular.module('todoApp', ['ui.router' ,'ngCookies'])
     }
     this.getSelect = function() {
       return selected;
+    }
+    this.setType = function(i,types) {
+      if(types=='A')type[i] = 'Audit';
+      if(types=='C')delete type[i];
+      $cookieStore.put(username+'t',type);
+    }
+    this.getType = function() {
+      return type;
     }
     this.syncSubject = function(sub) {
       subjects = sub;
