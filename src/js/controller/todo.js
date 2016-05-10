@@ -8,7 +8,7 @@ angular.module('todoApp', ['ui.router' ,'ngCookies'])
     todoList.enrolled = userService.get();
     todoList.subjects = userService.getSub();
     if (todoList.subjects.length == 0) {
-      $http.get('../../../subjects/list.json')
+      $http.get('https://whsatku.github.io/skecourses/list.json')
         .success(function(data) {
           todoList.subjects = data;
 
@@ -16,7 +16,7 @@ angular.module('todoApp', ['ui.router' ,'ngCookies'])
             todoList.selected[todoList.subjects.id] = {
               ['id']: "---"
             };
-            $http.get('../../../subjects/' + todoList.subjects[a].id + '.json')
+            $http.get('https://whsatku.github.io/skecourses/' + todoList.subjects[a].id + '.json')
               .success((function(a) {
                 return function(response) {
                   todoList.subjects[a]['description'] = response.description;
@@ -30,7 +30,7 @@ angular.module('todoApp', ['ui.router' ,'ngCookies'])
 
 
           for (i = 0; i < todoList.subjects.length; i++) {
-            $http.get('../../../subjects/sections/' + todoList.subjects[i].id + '.json')
+            $http.get('https://whsatku.github.io/skecourses/sections/' + todoList.subjects[i].id + '.json')
               .success((function(i) {
                 return function(response) {
                   todoList.subjects[i]['sections'] = response;
@@ -107,7 +107,7 @@ angular.module('todoApp', ['ui.router' ,'ngCookies'])
     home.enrolled = userService.get();
 
     if (home.subjects.length == 0) {
-      $http.get('../../../subjects/list.json')
+      $http.get('https://whsatku.github.io/skecourses/list.json')
         .success(function(data) {
           home.subjects = data;
 
@@ -115,7 +115,7 @@ angular.module('todoApp', ['ui.router' ,'ngCookies'])
             home.selected[home.subjects.id] = {
               ['id']: "---"
             };
-            $http.get('../../../subjects/' + home.subjects[a].id + '.json')
+            $http.get('https://whsatku.github.io/skecourses/' + home.subjects[a].id + '.json')
               .success((function(a) {
                 return function(response) {
                   home.subjects[a]['description'] = response.description;
@@ -128,7 +128,7 @@ angular.module('todoApp', ['ui.router' ,'ngCookies'])
           }
 
           for (i = 0; i < home.subjects.length; i++) {
-            $http.get('../../../subjects/sections/' + home.subjects[i].id + '.json')
+            $http.get('https://whsatku.github.io/skecourses/sections/' + home.subjects[i].id + '.json')
               .success((function(i) {
                 return function(response) {
                   home.subjects[i]['sections'] = response;
